@@ -13,7 +13,7 @@ export class AuthController {
     
     
     @Post('singin')
-    singin() {
-        return this.authService.singin()
+    singin(@Body() dto:AuthDto) {
+        return this.authService.singin(dto)
     }
 }
