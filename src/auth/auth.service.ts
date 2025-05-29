@@ -6,7 +6,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 @Injectable()
 export class AuthService {
     constructor(private prisma: PrismaService) { }
-    async singup(dto: AuthDto) {
+    async signup(dto: AuthDto) {
         const hash = await argon.hash(dto.password)
         try {
             const user = await this.prisma.user.create({
@@ -29,7 +29,7 @@ export class AuthService {
 
     }
 
-   async singin(dto: AuthDto) {
+   async signin(dto: AuthDto) {
         const user = await this.prisma.user.findUnique({
             where: {
                 email: dto.email,
