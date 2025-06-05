@@ -9,6 +9,13 @@ import { ConfigService } from "@nestjs/config";
 export class AuthService {
     constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) { }
     async signup(dto: AuthDto) {
+        const existingUser = await this.prisma.user.findUnique({
+            where: { email: dto.email }
+        });
+        if (existingUser) {
+            throw new ForbiddenException('Credentials taken');
+        }
+
         const hash = await argon.hash(dto.password)
         try {
             const user = await this.prisma.user.create({
