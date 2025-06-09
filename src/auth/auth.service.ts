@@ -13,7 +13,7 @@ export class AuthService {
             where: { email: dto.email }
         });
         if (existingUser) {
-            throw new ForbiddenException('Credentials taken');
+            throw new ForbiddenException('Credentials incorrect');
         }
 
         const hash = await argon.hash(dto.password)
@@ -29,7 +29,7 @@ export class AuthService {
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
-                    throw new ForbiddenException('Credentials taken')
+                    throw new ForbiddenException('Credentials incorrect')
                 }
             }
             throw error;
@@ -67,5 +67,15 @@ export class AuthService {
             access_token: token,
         }
 
+    }
+
+    async getAllUsers(){
+        return this.prisma.user.findMany({
+            select: {
+                id:true,
+                email: true,
+                createdAt: true,
+            }
+        })
     }
 }
