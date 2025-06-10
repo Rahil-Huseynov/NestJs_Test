@@ -69,13 +69,52 @@ export class AuthService {
 
     }
 
-    async getAllUsers(){
+    async getAllUsers() {
         return this.prisma.user.findMany({
             select: {
-                id:true,
+                id: true,
                 email: true,
                 createdAt: true,
             }
         })
+    }
+    
+    async putUser(userId: number, dto: Partial<AuthDto>) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId }
+        })
+
+        if (!user) {
+            throw new ForbiddenException('User not found')
+        }
+        let updateData: any = {}
+
+        if (dto.email) {
+            updateData.email = dto.email
+        }
+
+        if (dto.password) {
+            updateData.hash = await argon.hash(dto.password)
+        }
+        try {
+            const updateUser = await this.prisma.user.update({
+                where: { id: userId },
+                data: updateData,
+                select: {
+                    id: true,
+                    email: true,
+                    hash: true,
+                }
+            })
+            return updateUser
+        }
+
+        catch (error) {
+            if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+                throw new ForbiddenException('Email already in use')
+            }
+            throw error
+        }
+
     }
 }

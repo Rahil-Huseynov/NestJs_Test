@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 
@@ -17,7 +17,14 @@ export class AuthController {
         return this.authService.signin(dto)
     }
     @Get('users')
-    getUsers(){
+    getUsers() {
         return this.authService.getAllUsers();
+    }
+
+    @Put("users/:id")
+    updateUser(
+        @Param("id", ParseIntPipe) id: number,
+        @Body() dto: Partial<AuthDto>) {
+        return this.authService.putUser(id, dto)
     }
 }
