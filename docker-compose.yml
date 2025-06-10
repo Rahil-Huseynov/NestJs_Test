@@ -1,17 +1,6 @@
 version: '3.8'
-services:
-  web:
-    build: 
-      context: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    env_file:
-      - .env
-    networks:
-      - freecodecamp
 
+services:
   db:
     image: postgres:13
     ports:
