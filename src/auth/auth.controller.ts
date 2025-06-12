@@ -1,21 +1,25 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseInterceptors } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
+import { AnyFilesInterceptor } from "@nestjs/platform-express";
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('signup')
+    @UseInterceptors(AnyFilesInterceptor())
     signup(@Body() dto: AuthDto) {
         return this.authService.signup(dto)
     }
 
     @HttpCode(HttpStatus.OK)
     @Post('signin')
+    @UseInterceptors(AnyFilesInterceptor())
     signin(@Body() dto: AuthDto) {
         return this.authService.signin(dto)
     }
+
     @Get('users')
     getUsers() {
         return this.authService.getAllUsers();
