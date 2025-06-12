@@ -31,9 +31,15 @@ export class AuthController {
         @Body() dto: Partial<AuthDto>) {
         return this.authService.putUser(id, dto)
     }
+
     @Delete("users/:id")
     deleteUser(@Param("id", ParseIntPipe) id: number) {
         return this.authService.deleteUser(id);
+    }
+
+    @Get('ping')
+    ping() {
+        return 'pong';
     }
 
 }
